@@ -1,5 +1,8 @@
+// @ts-check
 import { writeFileSync } from 'fs';
+import {isNotExistCreateFolder} from './is-not-exist-create-folder';
 
+isNotExistCreateFolder('./tmp');
 
 const config = {
   minLength: 5,

@@ -25,27 +25,65 @@ async function main() {
 
     console.log()
     console.log('asyncMultiRequest');
-    for (let i = 0; i < 1; ++i) {
-        listPromises.push(measurePerformance({
-            url: 'http://localhost:3000/hello-world',
-            method: 'GET',
-            data: Array.from({ length: 10000 }).fill({}),
-        }));
-        listPromises.push(measurePerformance({
-            url: 'http://localhost:3000/concat-strings',
-            method: 'POST',
-            data: listString,
-        }));
-        listPromises.push(measurePerformance({
-            url: 'http://localhost:3000/array-sum',
-            method: 'POST',
-            data: listNumbers,
-        }));
+
+    let resolve;
+    const promise = new Promise((res) => {
+        resolve = res;
+    });
+    function resolveRequest() {
+        --counterResolve;
+        if(counterResolve === 0) resolve();
     }
+    let counterResolve = 3;
 
+    setTimeout(async () => {
+        for (let i = 0; i < 4; ++i) {
+            const localPromises = [];
+            localPromises.push(measurePerformance({
+                url: 'http://localhost:3000/concat-strings',
+                method: 'POST',
+                data: listString,
+            }));
+            localPromises.forEach(el => el.then(console.log))
+            listPromises.concat(localPromises);
+            await Promise.all(localPromises)
+        }
+        resolveRequest();
+    })
 
+    setTimeout(async () => {
+        for (let i = 0; i < 4; ++i) {
+            const localPromises = [];
+            localPromises.push(measurePerformance({
+                url: 'http://localhost:3000/array-sum',
+                method: 'POST',
+                data: listNumbers,
+            }));
+            localPromises.forEach(el => el.then(console.log))
+            listPromises.concat(localPromises);
+            await Promise.all(localPromises)
+        }
+        resolveRequest();
+    })
 
-    listPromises.forEach(el => el.then(console.log))
+    setTimeout(async () => {
+        for (let i = 0; i < 4; ++i) {
+            const localPromises = [];
+            localPromises.push(measurePerformance({
+                url: 'http://localhost:3000/hello-world',
+                method: 'GET',
+                data: Array.from({ length: 10000 }).fill({}),
+            }));
+            localPromises.forEach(el => el.then(console.log))
+            listPromises.concat(localPromises);
+            await Promise.all(localPromises)
+        }
+        resolveRequest();
+    })
+
+    //listPromises.forEach(el => el.then(console.log))
+
+    await promise;
 
     Promise.all(listPromises).then(() => {
         console.log();

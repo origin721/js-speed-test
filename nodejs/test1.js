@@ -5,6 +5,8 @@ const { readJsonFile } = require("./read-json-file.js");
 
 const measurePerformance = multitrading('./nodejs/measure-performance.js')
 
+const hostServer = 'http://localhost:3000'
+
 main();
 
 async function main() {
@@ -18,7 +20,7 @@ async function main() {
     const listPromises = [];
 
     console.log(await measurePerformance({
-        url: 'http://localhost:3000/hello-world',
+        url: hostServer+'/hello-world',
         method: 'GET',
         data: Array.from({ length: 10000 }).fill(undefined),
     }));
@@ -40,7 +42,7 @@ async function main() {
         for (let i = 0; i < 3; ++i) {
             const localPromises = [];
             localPromises.push(measurePerformance({
-                url: 'http://localhost:3000/hello-world',
+                url: hostServer+'/hello-world',
                 method: 'GET',
                 data: Array.from({ length: 10000 }).fill(undefined),
             }));
@@ -55,7 +57,7 @@ async function main() {
         for (let i = 0; i < 3; ++i) {
             const localPromises = [];
             localPromises.push(measurePerformance({
-                url: 'http://localhost:3000/concat-strings',
+                url: hostServer+'/concat-strings',
                 method: 'POST',
                 data: listString,
             }));
@@ -70,7 +72,7 @@ async function main() {
         for (let i = 0; i < 3; ++i) {
             const localPromises = [];
             localPromises.push(measurePerformance({
-                url: 'http://localhost:3000/array-sum',
+                url: hostServer+'/array-sum',
                 method: 'POST',
                 data: listNumbers,
             }));

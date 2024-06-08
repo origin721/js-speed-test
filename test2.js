@@ -30,6 +30,11 @@ async function measurePostPerformance(url, method, data) {
 
 main();
 async function main() {
+  const dateStart = Date.now();
+  const listString = JSON.parse(readFileSync('./tmp/string-array.json', 'utf8'));
+  const listNumber = JSON.parse(readFileSync('./tmp/number-array.json', 'utf8'));
+
+  console.log('paramsIsReaded');
   console.log(await measurePostPerformance(
     'http://localhost:3000/hello-world',
     'GET',
@@ -39,13 +44,41 @@ async function main() {
   console.log(await measurePostPerformance(
     'http://localhost:3000/concat-strings',
     'POST',
-    JSON.parse(readFileSync('./tmp/string-array.json', 'utf8')),
+    listString,
   ));
 
   console.log(await measurePostPerformance(
     'http://localhost:3000/array-sum',
     'POST',
-    JSON.parse(readFileSync('./tmp/number-array.json', 'utf8')),
+    listNumber,
   ));
+
+  console.log();
+  console.log('Syncrone end');
+
+  const listPromises = [];
+
+  listPromises.push(measurePostPerformance(
+    'http://localhost:3000/concat-strings',
+    'POST',
+    listString,
+  ));
+  listPromises.push(measurePostPerformance(
+    'http://localhost:3000/array-sum',
+    'POST',
+    listNumber,
+  ));
+  listPromises.push(measurePostPerformance(
+    'http://localhost:3000/concat-strings',
+    'POST',
+    listString,
+  ));
+
+  listPromises.forEach(el => el.then(console.log))
+
+  Promise.all(listPromises).then(() => {
+    console.log();
+    console.log('Всего времени:' + (Date.now() - dateStart));
+  });
 }
 

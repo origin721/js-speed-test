@@ -36,13 +36,21 @@ function multitrading(path) {
 
 function connectChildMultitrading(callback) {
     process.on('message', async (args) => {
-        // Обработка аргументов и добавление нового поля
-        const result = await callback(args);
+        try {
+            // Обработка аргументов и добавление нового поля
+            const result = await callback(args);
 
-        // Отправка результата обратно родительскому процессу
-        process.send(result);
+            // Отправка результата обратно родительскому процессу
+            process.send(result);
 
-        // Завершение процесса
-        process.exit(0);
+        }
+        catch (err) {
+            process.send(null);
+            console.error(__filename, callback.name, err)
+        }
+        finally {
+            process.exit(0);
+        }
+
     });
 }

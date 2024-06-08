@@ -7,35 +7,53 @@ const concatStrings = multitrading('./nodejs/modules/concat-strings.js')
 // Указываем порт
 const PORT = 3000;
 
+// const conters = {
+//     req: 0,
+//     res: 0,
+// }
+// setInterval(() => console.log(conters), 1000)
+
 /**
  * Функция-обработчик запросов
  * @type {http.RequestListener<typeof http.IncomingMessage, typeof http.ServerResponse>}
  */
 const requestHandler = async (req, res) => {
-    switch (req.url) {
-        case '/hello-world': {
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end('Hello, World!');
-            return;
-        }
-        case '/array-sum': {
-            if (req.method === 'POST') {
-                res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end((await sumArray(await getJsonBody(req))).toString());
-                return;
-            }
-        }
-        case '/concat-strings': {
-            if (req.method === 'POST') {
-                res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end(await concatStrings(await getJsonBody(req)));
-                return;
-            }
-        }
-    }
+    // ++conters.req;
+    try {
 
-    res.writeHead(404);
-    res.end();
+        switch (req.url) {
+            case '/hello-world': {
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end('Hello, World!');
+                return;
+            }
+            case '/array-sum': {
+                if (req.method === 'POST') {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    res.end((await sumArray(await getJsonBody(req))).toString());
+                    return;
+                }
+            }
+            case '/concat-strings': {
+                if (req.method === 'POST') {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    res.end(await concatStrings(await getJsonBody(req)));
+                    return;
+                }
+            }
+        }
+
+        res.writeHead(404);
+        res.end();
+    }
+    catch(err) {
+        console.error(err);
+        res.writeHead(500);
+        res.end();
+    }
+    // finally {
+    //     ++conters.res;
+    // }
 };
 
 // Создание сервера

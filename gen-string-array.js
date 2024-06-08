@@ -8,7 +8,7 @@ const config = {
   minLength: 5,
   maxLength: 10,
   numRows: 400,
-  numCols: 400,
+  numCols: 700,
   filePath: './tmp/string-array.json' // изменен путь файла на .json
 };
 

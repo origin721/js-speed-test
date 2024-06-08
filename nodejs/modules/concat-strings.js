@@ -1,8 +1,8 @@
 // @ts-check
-const { connectChildMultitrading } = require("../multitrading.js");
+const { connectChildМultithreading } = require("../multithreading.js");
 
 
-connectChildMultitrading(concatStrings);
+connectChildМultithreading(concatStrings);
 
 function concatStrings(list) {
     return list.join(' + ');

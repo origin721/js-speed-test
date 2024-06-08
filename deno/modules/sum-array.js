@@ -1,8 +1,8 @@
 // @ts-check
-import connectChildMultitrading from "../multitrading.js";
+import connectChildМultithreading from "../multithreading.js";
 
 
-connectChildMultitrading(sumArray);
+connectChildМultithreading(sumArray);
 
 function sumArray(numbers) {
     return numbers.reduce((acc, num) => acc + num, 0);

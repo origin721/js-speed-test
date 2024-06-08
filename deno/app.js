@@ -1,4 +1,4 @@
-import { multithreading } from "./multitrading.js";
+import { multithreading } from "./multithreading.js";
 
 const sumArray = await multithreading('./deno/modules/sum-array.js');
 const concatStrings = await multithreading('./deno/modules/concat-strings.js');

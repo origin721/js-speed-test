@@ -1,8 +1,8 @@
 // @ts-check
-const { connectChildMultitrading } = require("../multitrading.js");
+const { connectChildМultithreading } = require("../multithreading.js");
 
 
-connectChildMultitrading(sumArray);
+connectChildМultithreading(sumArray);
 
 function sumArray(numbers) {
     return numbers.reduce((acc, num) => acc + num, 0);

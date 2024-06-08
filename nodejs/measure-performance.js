@@ -3,7 +3,7 @@
 const { createLog, log } = require("./create-log.js");
 
 
-const { connectChildMultitrading } = require("./multitrading.js");
+const { connectChildМultithreading } = require("./multithreading.js");
 const http = require('http');
 const https = require('https');
 
@@ -15,7 +15,7 @@ module.exports = {
 
 
 
-connectChildMultitrading(measurePerformance);
+connectChildМultithreading(measurePerformance);
 
 async function measurePerformance({
     url,

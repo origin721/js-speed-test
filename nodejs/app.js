@@ -1,8 +1,8 @@
 const http = require('http');
-const { multitrading } = require("./multitrading.js");
+const { multithreading } = require("./multithreading.js");
 
-const sumArray = multitrading('./nodejs/modules/sum-array.js')
-const concatStrings = multitrading('./nodejs/modules/concat-strings.js')
+const sumArray = multithreading('./nodejs/modules/sum-array.js')
+const concatStrings = multithreading('./nodejs/modules/concat-strings.js')
 
 // Указываем порт
 const PORT = 3000;

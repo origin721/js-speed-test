@@ -1,10 +1,10 @@
 // @ts-check
 
-const { multitrading } = require("./multitrading.js");
+const { multithreading } = require("./multithreading.js");
 const { readJsonFile } = require("./read-json-file.js");
 //const {measurePerformance} = require('./measure-performance.js');
 
-const measurePerformance = multitrading('./nodejs/measure-performance.js')
+const measurePerformance = multithreading('./nodejs/measure-performance.js')
 
 const hostServer = 'http://localhost:3000'
 

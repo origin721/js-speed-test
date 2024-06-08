@@ -1,8 +1,8 @@
 // @ts-check
 
-const { multitrading } = require("./multitrading.js");
+const { multithreading } = require("./multithreading.js");
 
-multitrading('./nodejs/measure-performance.js')({
+multithreading('./nodejs/measure-performance.js')({
     url: 'http://localhost:3000/concat-strings',
     method: 'POST',
     data: [['a', 'b'], ['asdfsdfdsf', 'sdfsdfdsf']],

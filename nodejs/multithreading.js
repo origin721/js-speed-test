@@ -5,11 +5,11 @@ const os = require('os');
 const numCPUs = Math.max(os.cpus().length - 1, 1);
 
 module.exports = {
-    multitrading,
-    connectChildMultitrading,
+    multithreading,
+    connectChildМultithreading,
 }
 
-function multitrading(path) {
+function multithreading(path) {
     const workers = [];
     const taskQueues = [];
     const pendingTasks = [];
@@ -120,7 +120,7 @@ function multitrading(path) {
     };
 }
 
-function connectChildMultitrading(callback) {
+function connectChildМultithreading(callback) {
     process.on('message', async (args) => {
         try {
             // Обработка аргументов и добавление нового поля

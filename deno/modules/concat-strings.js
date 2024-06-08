@@ -1,8 +1,8 @@
 // @ts-check
-import { connectChildMultitrading } from "../multitrading.js";
+import { connectChildМultithreading } from "../multithreading.js";
 
 
-connectChildMultitrading(concatStrings);
+connectChildМultithreading(concatStrings);
 
 function concatStrings(list) {
     return list.join(' + ');

@@ -1,0 +1,13 @@
+{
+  "name": "bun-speed-test",
+  "version": "1.0.0",
+  "description": "bun ./gen-number-array.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./nodejs/app.js",
+    "gen": "bun ./gen-string-array.js && gen-number-array.js",
+    "test": "node ./nodejs/test1.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

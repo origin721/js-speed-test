@@ -1,9 +1,10 @@
 // @ts-check
-import connectChildМultithreading from "../multithreading.js";
+import connectChildMultithreading from "../multithreading.js";
 
 
-connectChildМultithreading(sumArray);
+connectChildMultithreading(sumArray);
 
 function sumArray(numbers) {
+    //return Array.from({length: 99999999}).fill(1111)
     return numbers.reduce((acc, num) => acc + num, 0);
 }

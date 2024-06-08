@@ -1,8 +1,8 @@
 // @ts-check
-const { connectChildМultithreading } = require("../multithreading.js");
+const { connectChildMultithreading } = require("../multithreading.js");
 
 
-connectChildМultithreading(concatStrings);
+connectChildMultithreading(concatStrings);
 
 function concatStrings(list) {
     return list.join(' + ');

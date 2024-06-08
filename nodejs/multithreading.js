@@ -1,136 +1,135 @@
 //@ts-check
-const { fork } = require('child_process');
+const { fork, ChildProcess } = require('child_process');
 const os = require('os');
+const { removeArray } = require('./remove-array');
+const { waitForLowCpuLoad } = require('./wait-for-low-cpu-load');
 
-const numCPUs = Math.max(os.cpus().length - 1, 1);
+const numCPUs = Math.max(os.cpus().length - 1, 1) + 1;
 
 module.exports = {
     multithreading,
-    connectChildМultithreading,
+    connectChildMultithreading,
 }
+
+let lastId = 0;
+
+function getId() {
+    return ++lastId;
+};
+
+let requestCounter = 0;
+
+/**
+ * @type {Array<WorkerCtrl>}
+ * @typedef {Object} WorkerCtrl
+ * @prop {ChildProcess} WorkerCtrl.worker
+ * @prop {number} WorkerCtrl.taskCount
+ * @prop {Record<string, Function>} WorkerCtrl.resolveById
+ * @prop {Record<string, Function>} WorkerCtrl.rejectById
+ */
+const workersCtrl = [];
 
 function multithreading(path) {
-    const workers = [];
-    const taskQueues = [];
-    const pendingTasks = [];
-    let activeWorkers = 0;
+    return async (args) => {
+        ++requestCounter;
+        const idRequest = getId();
+        // console.log('start', idRequest, requestCounter);
 
-    // Создание дочерних процессов
-    const createWorker = (index) => {
-        const worker = fork(path);
-        workers[index] = worker;
-        taskQueues[index] = [];
+        //await waitForLowCpuLoad(300);
 
-        worker.on('message', (message) => {
-            const taskQueue = taskQueues[index];
-            if (taskQueue.length > 0) {
-                const { resolve } = taskQueue.shift();
-                resolve(message);
-            }
-
-            checkPendingTasks();
-            checkAndTerminateWorker(index);
-        });
-
-        worker.on('error', (error) => {
-            const taskQueue = taskQueues[index];
-            if (taskQueue.length > 0) {
-                const { reject } = taskQueue.shift();
-                reject(error);
-            }
-
-            checkPendingTasks();
-            checkAndTerminateWorker(index);
-        });
-
-        worker.on('exit', (code) => {
-            if (code !== 0) {
-                const taskQueue = taskQueues[index];
-                if (taskQueue.length > 0) {
-                    const { reject } = taskQueue.shift();
-                    reject(new Error(`Child process exited with code ${code}`));
-                }
-            }
-        });
-
-        ++activeWorkers;
-    };
-
-    const checkAndTerminateWorker = (index) => {
-        if (taskQueues[index].length === 0 && pendingTasks.length === 0) {
-            workers[index].kill();
-            workers[index] = null;
-            --activeWorkers;
-        }
-    };
-
-    const checkPendingTasks = () => {
-        while (pendingTasks.length > 0) {
-            let workerIndex = -1;
-
-            // Найти процесс с количеством задач меньше 5
-            for (let i = 0; i < workers.length; i++) {
-                if (workers[i] && taskQueues[i].length < 5) {
-                    workerIndex = i;
-                    break;
-                }
-            }
-
-            if (workerIndex === -1) {
-                break;
-            }
-
-            const { resolve, reject, args } = pendingTasks.shift();
-            const worker = workers[workerIndex];
-            const taskQueue = taskQueues[workerIndex];
-
-            taskQueue.push({ resolve, reject, args });
-            worker.send(args);
-        }
-    };
-
-    return (args) => {
         return new Promise((resolve, reject) => {
-            let workerIndex = -1;
-
-            // Найти процесс с количеством задач меньше 5
-            for (let i = 0; i < workers.length; i++) {
-                if (workers[i] && taskQueues[i].length < 5) {
-                    workerIndex = i;
-                    break;
+            /**
+             * @type {WorkerCtrl}
+             */
+            let workerCtlItem;
+            const isNewWorker = workersCtrl.length < numCPUs;
+            if (isNewWorker) {
+                workerCtlItem = {
+                    worker: fork(path),
+                    taskCount: 1,
+                    resolveById: {},
+                    rejectById: {},
                 }
+                workersCtrl.push(workerCtlItem);
+            } else {
+                workerCtlItem = workersCtrl.reduce((leastLoaded, current) =>
+                    current.taskCount < leastLoaded.taskCount ? current : leastLoaded
+                );
+                ++workerCtlItem.taskCount;
             }
 
-            if (workerIndex === -1) {
-                if (activeWorkers < numCPUs) {
-                    workerIndex = workers.length;
-                    createWorker(workerIndex);
-                } else {
-                    pendingTasks.push({ resolve, reject, args });
-                    return;
-                }
+            // console.log('end', requestCounter, workerCtlItem.taskCount);
+
+            if (isNewWorker) {
+                workerCtlItem.worker.on('message', (response) => {
+                    const msgReqId = response.idRequest;
+
+                    // if (!msgReqId || !workerCtlItem.resolveById[msgReqId]) {
+                    //     console.log('Не нашёл idRequest Resolve: ', msgReqId);
+                    //     return;
+                    // }
+
+                    workerCtlItem.resolveById[msgReqId](response.result);
+                });
+
+                workerCtlItem.worker.on('error', (error) => {
+                    //reject(error);// TODO: reject не тот
+                    console.error(__filename, error);
+                    onProcessCompletion();
+                });
+
+                workerCtlItem.worker.on('exit', (code) => {
+                    if (code !== 0) {
+                        onProcessCompletion();
+                        console.error(__filename, `Child process exited with code ${code}`);
+                        //reject(new Error(`Child process exited with code ${code}`));
+                    }
+                });
             }
 
-            const worker = workers[workerIndex];
-            const taskQueue = taskQueues[workerIndex];
+            workerCtlItem.resolveById[idRequest] = (value) => {
+                onProcessCompletion();
+                // console.log('deleted idRequest', idRequest);
+                resolve(value);
+                delete workerCtlItem.resolveById[idRequest];
+                delete workerCtlItem.rejectById[idRequest];
+            };
 
-            taskQueue.push({ resolve, reject, args });
-            worker.send(args);
+            // console.log('created idRequest', idRequest);
+
+            // Отправка аргументов дочернему процессу
+            workerCtlItem.worker.send({ args, idRequest });
+
+            function onProcessCompletion() {
+                --requestCounter;
+                --workerCtlItem.taskCount;
+                //console.log('end', requestCounter, workerCtlItem.taskCount);
+                if (workerCtlItem.taskCount === 0) {
+                    for (let key in workerCtlItem.rejectById) {
+                        workerCtlItem.rejectById[key]();
+                        delete workerCtlItem.resolveById[idRequest];
+                        delete workerCtlItem.rejectById[idRequest];
+                    }
+                    removeArray(workersCtrl, workerCtlItem);
+                    workerCtlItem.worker.send({ isExit: true });
+                }
+            }
         });
-    };
+    }
 }
 
-function connectChildМultithreading(callback) {
-    process.on('message', async (args) => {
-        try {
-            // Обработка аргументов и добавление нового поля
-            const result = await callback(args);
+function connectChildMultithreading(callback) {
+    process.on('message', async ({ args, idRequest, isExit, responseOk }) => {
+        if (isExit) return process.exit(0);
 
-            // Отправка результата обратно родительскому процессу
+        const result = { idRequest };
+
+        try {
+            result.result = await callback(args);
             process.send(result);
         } catch (err) {
-            process.send(null);
             console.error(__filename, callback.name, { args }, err);
+            process.send(result);
         }
     });
 }

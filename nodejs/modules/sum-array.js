@@ -1,8 +1,8 @@
 // @ts-check
-const { connectChildМultithreading } = require("../multithreading.js");
+const { connectChildMultithreading } = require("../multithreading.js");
 
 
-connectChildМultithreading(sumArray);
+connectChildMultithreading(sumArray);
 
 function sumArray(numbers) {
     return numbers.reduce((acc, num) => acc + num, 0);

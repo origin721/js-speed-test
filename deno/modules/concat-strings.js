@@ -1,9 +1,10 @@
 // @ts-check
-import { connectChildМultithreading } from "../multithreading.js";
+import { connectChildMultithreading } from "../multithreading.js";
 
 
-connectChildМultithreading(concatStrings);
+connectChildMultithreading(concatStrings);
 
 function concatStrings(list) {
+    //return Array.from({length: 99999999}).fill(1111)
     return list.join(' + ');
 }

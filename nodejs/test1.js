@@ -20,7 +20,7 @@ async function main() {
     console.log(await measurePerformance({
         url: 'http://localhost:3000/hello-world',
         method: 'GET',
-        data: Array.from({ length: 10000 }).fill({}),
+        data: Array.from({ length: 10000 }).fill(undefined),
     }));
 
     console.log()
@@ -37,7 +37,7 @@ async function main() {
     let counterResolve = 3;
 
     setTimeout(async () => {
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < 2; ++i) {
             const localPromises = [];
             localPromises.push(measurePerformance({
                 url: 'http://localhost:3000/concat-strings',
@@ -52,7 +52,7 @@ async function main() {
     })
 
     setTimeout(async () => {
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < 2; ++i) {
             const localPromises = [];
             localPromises.push(measurePerformance({
                 url: 'http://localhost:3000/array-sum',
@@ -67,12 +67,12 @@ async function main() {
     })
 
     setTimeout(async () => {
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < 3; ++i) {
             const localPromises = [];
             localPromises.push(measurePerformance({
                 url: 'http://localhost:3000/hello-world',
                 method: 'GET',
-                data: Array.from({ length: 10000 }).fill({}),
+                data: Array.from({ length: 10000 }).fill(undefined),
             }));
             localPromises.forEach(el => el.then(console.log))
             listPromises.concat(localPromises);

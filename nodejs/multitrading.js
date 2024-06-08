@@ -46,7 +46,7 @@ function connectChildMultitrading(callback) {
         }
         catch (err) {
             process.send(null);
-            console.error(__filename, callback.name, err)
+            console.error(__filename, callback.name, {args}, err)
         }
         finally {
             process.exit(0);

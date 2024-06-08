@@ -33,7 +33,7 @@ async function main() {
   console.log(await measurePostPerformance(
     'http://localhost:3000/hello-world',
     'GET',
-    Array.from({length: 10}).fill(),
+    Array.from({length: 100000}).fill(),
   ));
 
   console.log(await measurePostPerformance(

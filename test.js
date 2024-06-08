@@ -20,4 +20,4 @@ async function measureFetchPerformance(numRequests) {
   };
 }
 
-measureFetchPerformance(1000000).then(console.log).catch(console.error);
+measureFetchPerformance(100000).then(console.log).catch(console.error);

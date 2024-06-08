@@ -8,7 +8,7 @@ isNotExistCreateFolder('./tmp');
 const config = {
   minValue: 2,
   maxValue: 99,
-  numRows: 100,
+  numRows: 300,
   numCols: 7000,
   filePath: './tmp/number-array.json' // изменен путь файла на .json
 };

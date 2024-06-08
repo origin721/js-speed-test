@@ -2,6 +2,7 @@
 
 const { multitrading } = require("./multitrading.js");
 const { readJsonFile } = require("./read-json-file.js");
+//const {measurePerformance} = require('./measure-performance.js');
 
 const measurePerformance = multitrading('./nodejs/measure-performance.js')
 

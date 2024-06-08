@@ -6,7 +6,7 @@ isNotExistCreateFolder('./tmp');
 
 const config = {
   minLength: 5,
-  maxLength: 1000,
+  maxLength: 10,
   numRows: 400,
   numCols: 400,
   filePath: './tmp/string-array.json' // изменен путь файла на .json

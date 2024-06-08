@@ -6,10 +6,10 @@ isNotExistCreateFolder('./tmp');
 
 // Пример использования:
 const config = {
-  minValue: -1999,
-  maxValue: 1999,
+  minValue: -99,
+  maxValue: 99,
   numRows: 400,
-  numCols: 400000,
+  numCols: 4000,
   filePath: './tmp/number-array.json' // изменен путь файла на .json
 };
 

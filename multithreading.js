@@ -38,6 +38,7 @@ export function multithreading(filePath) {
         if (errorOutput) {
           reject(new Error(errorOutput));
         } else {
+          //console.log({output})
           const response = JSON.parse(output);
           if (response.requestId === requestId) {
             resolve(response.result);

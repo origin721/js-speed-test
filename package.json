@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./nodejs/app.js",
     "gen": "bun ./gen-string-array.js && gen-number-array.js",
-    "test": "node ./nodejs/test1.js"
+    "test": "node ./nodejs/test1.js",
+    "test:bun": "bun ./test2.js"
   },
   "author": "",
   "license": "ISC"

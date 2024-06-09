@@ -21,7 +21,7 @@ async function main() {
     const listPromises = [];
 
     console.log(await measurePerformance({
-        url: hostServer+'/hello-world',
+        url: hostServer + '/hello-world',
         method: 'GET',
         data: Array.from({ length: 1000 }).fill(undefined),
     }));
@@ -35,189 +35,66 @@ async function main() {
     });
     function resolveRequest() {
         --counterResolve;
-        if(counterResolve === 0) resolve();
+        // console.log({counterResolve})
+        if (counterResolve === 0) resolve();
     }
-    let counterResolve = 12;
 
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/hello-world',
-                method: 'GET',
-                data: Array.from({ length: 1000 }).fill(undefined),
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
 
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/concat-strings',
-                method: 'POST',
-                data: listString,
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
+    let counterResolve = 48; // (2 * 6) + (3*6) + (3*6)
 
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/hello-world',
-                method: 'GET',
-                data: Array.from({ length: 1000 }).fill(undefined),
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
+    for (let j = 0; j < 6; ++j) {
 
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/hello-world',
-                method: 'GET',
-                data: Array.from({ length: 1000 }).fill(undefined),
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
+        for (let z = 0; z < 2; ++z) {
+            setTimeout(async () => {
+                for (let i = 0; i < 10; ++i) {
+                    const localPromises = [];
+                    localPromises.push(measurePerformance({
+                        url: hostServer + '/hello-world',
+                        method: 'GET',
+                        data: Array.from({ length: 1000 }).fill(undefined),
+                    }));
+                    localPromises.forEach(el => el.then(console.log))
+                    listPromises.concat(localPromises);
+                    await Promise.allSettled(localPromises)
+                }
+                resolveRequest();
+            })
         }
-        resolveRequest();
-    })
 
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/hello-world',
-                method: 'GET',
-                data: Array.from({ length: 1000 }).fill(undefined),
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
+        for (let z = 0; z < 3; ++z) {
+            setTimeout(async () => {
+                for (let i = 0; i < 10; ++i) {
+                    const localPromises = [];
+                    localPromises.push(measurePerformance({
+                        url: hostServer + '/concat-strings',
+                        method: 'POST',
+                        data: listString,
+                    }));
+                    localPromises.forEach(el => el.then(console.log))
+                    listPromises.concat(localPromises);
+                    await Promise.allSettled(localPromises)
+                }
+                resolveRequest();
+            })
         }
-        resolveRequest();
-    })
 
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/array-sum',
-                method: 'POST',
-                data: listNumbers,
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
+        for (let z = 0; z < 3; ++z) {
+            setTimeout(async () => {
+                for (let i = 0; i < 10; ++i) {
+                    const localPromises = [];
+                    localPromises.push(measurePerformance({
+                        url: hostServer + '/array-sum',
+                        method: 'POST',
+                        data: listNumbers,
+                    }));
+                    localPromises.forEach(el => el.then(console.log))
+                    listPromises.concat(localPromises);
+                    await Promise.allSettled(localPromises)
+                }
+                resolveRequest();
+            })
         }
-        resolveRequest();
-    })
-
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/hello-world',
-                method: 'GET',
-                data: Array.from({ length: 1000 }).fill(undefined),
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
-
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/concat-strings',
-                method: 'POST',
-                data: listString,
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
-
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/array-sum',
-                method: 'POST',
-                data: listNumbers,
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
-
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/hello-world',
-                method: 'GET',
-                data: Array.from({ length: 1000 }).fill(undefined),
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
-
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/concat-strings',
-                method: 'POST',
-                data: listString,
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
-
-    setTimeout(async () => {
-        for (let i = 0; i < 3; ++i) {
-            const localPromises = [];
-            localPromises.push(measurePerformance({
-                url: hostServer+'/array-sum',
-                method: 'POST',
-                data: listNumbers,
-            }));
-            localPromises.forEach(el => el.then(console.log))
-            listPromises.concat(localPromises);
-            await Promise.allSettled(localPromises)
-        }
-        resolveRequest();
-    })
+    }
 
     //listPromises.forEach(el => el.then(console.log))
 

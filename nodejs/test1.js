@@ -45,12 +45,12 @@ async function main() {
     for (let j = 0; j < 6; ++j) {
 
         setTimeout(async () => {
-            for (let i = 0; i < 10; ++i) {
+            for (let i = 0; i < 140; ++i) {
                 const localPromises = [];
                 localPromises.push(measurePerformance({
                     url: hostServer + '/hello-world',
                     method: 'GET',
-                    data: Array.from({ length: 1000 }).fill(undefined),
+                    data: Array.from({ length: 100 }).fill(undefined),
                 }));
                 localPromises.forEach(el => el.then(console.log))
                 listPromises.concat(localPromises);
@@ -60,7 +60,7 @@ async function main() {
         })
 
         setTimeout(async () => {
-            for (let i = 0; i < 10; ++i) {
+            for (let i = 0; i < 40; ++i) {
                 const localPromises = [];
                 localPromises.push(measurePerformance({
                     url: hostServer + '/concat-strings',
@@ -75,7 +75,7 @@ async function main() {
         })
 
         setTimeout(async () => {
-            for (let i = 0; i < 10; ++i) {
+            for (let i = 0; i < 40; ++i) {
                 const localPromises = [];
                 localPromises.push(measurePerformance({
                     url: hostServer + '/array-sum',

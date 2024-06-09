@@ -3,6 +3,7 @@ const { multithreading } = require("./multithreading.js");
 
 const sumArray = multithreading('./nodejs/modules/sum-array.js')
 const concatStrings = multithreading('./nodejs/modules/concat-strings.js')
+const analyzeUsers = multithreading('./nodejs/modules/analyze-users.js')
 
 // Указываем порт
 const PORT = 3000;
@@ -41,12 +42,20 @@ const requestHandler = async (req, res) => {
                     return;
                 }
             }
+            case '/analyze-users': {
+                if (req.method === 'POST') {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    const result = JSON.stringify(await analyzeUsers(await getJsonBody(req)));
+                    res.end(result);
+                    return;
+                }
+            }
         }
 
         res.writeHead(404);
         res.end();
     }
-    catch(err) {
+    catch (err) {
         console.error(err);
         res.writeHead(500);
         res.end();

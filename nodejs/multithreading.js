@@ -1,6 +1,7 @@
 //@ts-check
 const { fork } = require('child_process');
 const os = require('os');
+const { log } = require('./create-log');
 
 const numCPUs = Math.max(os.cpus().length - 1, 1);
 
@@ -111,7 +112,7 @@ function multithreading(path) {
     //     });
     // };
 
-    return async (args) => {
+    return async (...args) => {
         // if (checkCpuLoad()) {
         //     await waitForLowCpuLoad(1000);
         // }
@@ -150,7 +151,7 @@ function connectChildMultithreading(callback) {
     process.on('message', async (args) => {
         try {
             // Обработка аргументов и добавление нового поля
-            const result = await callback(args);
+            const result = await callback(...args);
 
             // Отправка результата обратно родительскому процессу
             process.send(result);

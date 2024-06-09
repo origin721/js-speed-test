@@ -40,7 +40,7 @@ async function main() {
     }
 
 
-    let counterResolve = 18; // 6 * 3
+    let counterResolve = 13; // 6 * 3
 
     for (let j = 0; j < 6; ++j) {
 

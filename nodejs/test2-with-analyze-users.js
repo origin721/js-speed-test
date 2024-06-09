@@ -42,7 +42,7 @@ async function main() {
     }
 
 
-    const jLength = 3;
+    const jLength = 7;
     let counterResolve = jLength * 4; // jLength * countSetTimeout
 
     for (let j = 0; j < jLength; ++j) {

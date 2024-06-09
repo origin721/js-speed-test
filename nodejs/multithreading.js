@@ -15,9 +15,14 @@ function multithreading(path) {
     const taskQueues = [];
     const pendingTasks = [];
     let activeWorkers = 0;
+    let idleTimeout = null;
 
-    // Создание дочерних процессов
-    const createWorker = (index) => {
+    // Создание пула процессов
+    for (let i = 0; i < numCPUs; i++) {
+        createWorker(i);
+    }
+
+    function createWorker(index) {
         const worker = fork(path);
         workers[index] = worker;
         taskQueues[index] = [];
@@ -28,9 +33,7 @@ function multithreading(path) {
                 const { resolve } = taskQueue.shift();
                 resolve(message);
             }
-
             checkPendingTasks();
-            checkAndTerminateWorker(index);
         });
 
         worker.on('error', (error) => {
@@ -39,9 +42,7 @@ function multithreading(path) {
                 const { reject } = taskQueue.shift();
                 reject(error);
             }
-
             checkPendingTasks();
-            checkAndTerminateWorker(index);
         });
 
         worker.on('exit', (code) => {
@@ -52,20 +53,16 @@ function multithreading(path) {
                     reject(new Error(`Child process exited with code ${code}`));
                 }
             }
+            --activeWorkers;
+            if (taskQueues[index].length > 0 || pendingTasks.length > 0) {
+                createWorker(index);
+            }
         });
 
         ++activeWorkers;
-    };
+    }
 
-    const checkAndTerminateWorker = (index) => {
-        if (taskQueues[index].length === 0 && pendingTasks.length === 0) {
-            workers[index].kill();
-            workers[index] = null;
-            --activeWorkers;
-        }
-    };
-
-    const checkPendingTasks = () => {
+    function checkPendingTasks() {
         while (pendingTasks.length > 0) {
             let workerIndex = -1;
 
@@ -88,34 +85,44 @@ function multithreading(path) {
             taskQueue.push({ resolve, reject, args });
             worker.send(args);
         }
-    };
 
-    // const checkCpuLoad = () => {
-    //     const cpus = os.cpus();
-    //     const averageLoad = cpus.reduce((total, cpu) => {
-    //         const { user, nice, sys, idle, irq } = cpu.times;
-    //         const totalLoad = user + nice + sys + irq;
-    //         return total + (totalLoad / (totalLoad + idle));
-    //     }, 0) / cpus.length;
+        // Проверка завершения всех задач
+        if (pendingTasks.length === 0 && taskQueues.every(queue => queue.length === 0)) {
+            if (idleTimeout) {
+                clearTimeout(idleTimeout);
+            }
+            idleTimeout = setTimeout(() => {
+                terminateAllWorkers();
+            }, 2000); // 2 секунды ожидания до завершения процессов
+        }
+    }
 
-    //     return averageLoad > 0.9;
-    // };
+    function checkCpuLoad() {
+        const cpus = os.cpus();
+        const averageLoad = cpus.reduce((total, cpu) => {
+            const { user, nice, sys, idle, irq } = cpu.times;
+            const totalLoad = user + nice + sys + irq;
+            return total + (totalLoad / (totalLoad + idle));
+        }, 0) / cpus.length;
 
-    // const waitForLowCpuLoad = (intervalMs) => {
-    //     return new Promise((resolve) => {
-    //         const interval = setInterval(() => {
-    //             if (!checkCpuLoad()) {
-    //                 clearInterval(interval);
-    //                 resolve();
-    //             }
-    //         }, intervalMs);
-    //     });
-    // };
+        return averageLoad > 0.9;
+    }
+
+    function terminateAllWorkers() {
+        for (let i = 0; i < workers.length; i++) {
+            if (workers[i]) {
+                workers[i].kill();
+                workers[i] = null;
+            }
+        }
+        activeWorkers = 0;
+    }
 
     return async (...args) => {
-        // if (checkCpuLoad()) {
-        //     await waitForLowCpuLoad(1000);
-        // }
+        if (idleTimeout) {
+            clearTimeout(idleTimeout);
+            idleTimeout = null;
+        }
 
         return new Promise((resolve, reject) => {
             let workerIndex = -1;
@@ -129,7 +136,7 @@ function multithreading(path) {
             }
 
             if (workerIndex === -1) {
-                if (activeWorkers < numCPUs) {
+                if (!checkCpuLoad()) {
                     workerIndex = workers.length;
                     createWorker(workerIndex);
                 } else {

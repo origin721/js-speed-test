@@ -48,7 +48,7 @@ async function main() {
     for (let j = 0; j < jLength; ++j) {
 
         setTimeout(async () => {
-            for (let i = 0; i < 70; ++i) {
+            for (let i = 0; i < 45; ++i) {
                 const localPromises = [];
                 localPromises.push(measurePerformance({
                     url: hostServer + '/hello-world',

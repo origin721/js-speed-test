@@ -1,0 +1,8 @@
+[package]
+name = "simple_web_service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.38", features = ["full"] }
+axum = { version = "0.7", features = ["json"] }

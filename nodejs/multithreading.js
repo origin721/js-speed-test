@@ -1,7 +1,6 @@
 //@ts-check
 const { fork } = require('child_process');
 const os = require('os');
-const { log } = require('./create-log');
 
 const numCPUs = Math.max(os.cpus().length - 1, 1);
 
@@ -97,17 +96,6 @@ function multithreading(path) {
         }
     }
 
-    function checkCpuLoad() {
-        const cpus = os.cpus();
-        const averageLoad = cpus.reduce((total, cpu) => {
-            const { user, nice, sys, idle, irq } = cpu.times;
-            const totalLoad = user + nice + sys + irq;
-            return total + (totalLoad / (totalLoad + idle));
-        }, 0) / cpus.length;
-
-        return averageLoad > 0.9;
-    }
-
     function terminateAllWorkers() {
         for (let i = 0; i < workers.length; i++) {
             if (workers[i]) {
@@ -136,13 +124,8 @@ function multithreading(path) {
             }
 
             if (workerIndex === -1) {
-                if (!checkCpuLoad()) {
-                    workerIndex = workers.length;
-                    createWorker(workerIndex);
-                } else {
-                    pendingTasks.push({ resolve, reject, args });
-                    return;
-                }
+                pendingTasks.push({ resolve, reject, args });
+                return;
             }
 
             const worker = workers[workerIndex];

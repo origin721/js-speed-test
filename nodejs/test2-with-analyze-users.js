@@ -43,39 +43,39 @@ async function main() {
 
 
     const jLength = 7;
-    let counterResolve = jLength * 4; // jLength * countSetTimeout
+    let counterResolve = jLength * 1; // jLength * countSetTimeout
 
     for (let j = 0; j < jLength; ++j) {
 
-        setTimeout(async () => {
-            for (let i = 0; i < 45; ++i) {
-                const localPromises = [];
-                localPromises.push(measurePerformance({
-                    url: hostServer + '/hello-world',
-                    method: 'GET',
-                    data: Array.from({ length: 100 }).fill(undefined),
-                }));
-                localPromises.forEach(el => el.then(console.log))
-                listPromises.concat(localPromises);
-                await Promise.allSettled(localPromises)
-            }
-            resolveRequest();
-        })
+        // setTimeout(async () => {
+        //     for (let i = 0; i < 45; ++i) {
+        //         const localPromises = [];
+        //         localPromises.push(measurePerformance({
+        //             url: hostServer + '/hello-world',
+        //             method: 'GET',
+        //             data: Array.from({ length: 100 }).fill(undefined),
+        //         }));
+        //         localPromises.forEach(el => el.then(console.log))
+        //         listPromises.concat(localPromises);
+        //         await Promise.allSettled(localPromises)
+        //     }
+        //     resolveRequest();
+        // })
 
-        setTimeout(async () => {
-            for (let i = 0; i < 40; ++i) {
-                const localPromises = [];
-                localPromises.push(measurePerformance({
-                    url: hostServer + '/concat-strings',
-                    method: 'POST',
-                    data: listString,
-                }));
-                localPromises.forEach(el => el.then(console.log))
-                listPromises.concat(localPromises);
-                await Promise.allSettled(localPromises)
-            }
-            resolveRequest();
-        })
+        // setTimeout(async () => {
+        //     for (let i = 0; i < 40; ++i) {
+        //         const localPromises = [];
+        //         localPromises.push(measurePerformance({
+        //             url: hostServer + '/concat-strings',
+        //             method: 'POST',
+        //             data: listString,
+        //         }));
+        //         localPromises.forEach(el => el.then(console.log))
+        //         listPromises.concat(localPromises);
+        //         await Promise.allSettled(localPromises)
+        //     }
+        //     resolveRequest();
+        // })
 
         setTimeout(async () => {
             for (let i = 0; i < 40; ++i) {
@@ -92,20 +92,20 @@ async function main() {
             resolveRequest();
         })
 
-        setTimeout(async () => {
-            for (let i = 0; i < 40; ++i) {
-                const localPromises = [];
-                localPromises.push(measurePerformance({
-                    url: hostServer + '/analyze-users',
-                    method: 'POST',
-                    data: listUsers,
-                }));
-                localPromises.forEach(el => el.then(console.log))
-                listPromises.concat(localPromises);
-                await Promise.allSettled(localPromises)
-            }
-            resolveRequest();
-        })
+        // setTimeout(async () => {
+        //     for (let i = 0; i < 40; ++i) {
+        //         const localPromises = [];
+        //         localPromises.push(measurePerformance({
+        //             url: hostServer + '/analyze-users',
+        //             method: 'POST',
+        //             data: listUsers,
+        //         }));
+        //         localPromises.forEach(el => el.then(console.log))
+        //         listPromises.concat(localPromises);
+        //         await Promise.allSettled(localPromises)
+        //     }
+        //     resolveRequest();
+        // })
     }
 
     //listPromises.forEach(el => el.then(console.log))

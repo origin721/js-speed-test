@@ -22,11 +22,11 @@ async function main() {
     const dateStart = Date.now();
     const listPromises = [];
 
-    console.log(await measurePerformance({
-        url: hostServer + '/hello-world',
-        method: 'GET',
-        data: Array.from({ length: 1000 }).fill(undefined),
-    }));
+   //console.log(await measurePerformance({
+   //    url: hostServer + '/hello-world',
+   //    method: 'GET',
+   //    data: Array.from({ length: 1000 }).fill(undefined),
+   //}));
 
     console.log()
     console.log('asyncMultiRequest');

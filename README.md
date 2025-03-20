@@ -12,6 +12,8 @@ bun ./index.js
 
 node ./nodejs/app.js
 
+Если кто то случайно забрёл сюда, то nodejs код можно оценить как и rust код но генерация данных для теста вроде была на bun
+
 ## deno
 
 deno run --allow-net ./deno/app.js
